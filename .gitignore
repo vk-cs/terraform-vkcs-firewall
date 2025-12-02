@@ -4,7 +4,6 @@
 .DS_Store
 example.tf
 .terraform*
-!.terraform-docs.yml
 terraform.tfplan
 terraform.tfstate
 terraform-provider-vkcs_darwin

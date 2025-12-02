@@ -1,11 +1,24 @@
+variable "region" {
+  type        = string
+  description = "The region in which to obtain the networking client."
+  default     = null
+}
+
+variable "sdn" {
+  type        = string
+  description = "SDN to use for this resource."
+  default     = null
+}
+
 variable "name" {
   type        = string
   description = "A name for the security group."
+}
 
-  validation {
-    condition     = length(var.name) > 0
-    error_message = "Security group name cannot be empty."
-  }
+variable "tags" {
+  type        = set(string)
+  description = "Tags for the security group."
+  default     = []
 }
 
 variable "delete_default_rules" {
@@ -17,57 +30,31 @@ variable "delete_default_rules" {
 variable "description" {
   type        = string
   description = "A description for the security group."
-  default     = ""
-}
-
-variable "region" {
-  type        = string
-  description = "The region in which to obtain the networking client."
   default     = null
-}
-
-variable "sdn" {
-  type        = string
-  description = " SDN to use for this resource. Must be one of following: neutron, sprut."
-  default     = null
-
-  validation {
-    condition     = var.sdn == null || contains(["neutron", "sprut"], var.sdn)
-    error_message = "SDN must be either 'neutron' or 'sprut'."
-  }
-}
-
-variable "tags" {
-  type        = set(string)
-  description = "Tags for the security group."
-  default     = []
 }
 
 variable "rules" {
   type = list(object({
-    direction        = string
+    direction        = optional(string, "ingress")
     description      = optional(string)
+    port             = optional(number)
     port_range_max   = optional(number)
     port_range_min   = optional(number)
     protocol         = optional(string)
     remote_group_id  = optional(string)
     remote_ip_prefix = optional(string)
   }))
-  description = "List of security rules."
+  description = <<-EOT
+  List of security rules. See `vkcs_networking_secgroup_rule` arguments.
+  Use `port` or `port_range_min` and `port_range_max`.
+  EOT
   default     = []
 
   validation {
     condition = alltrue([
-      for rule in var.rules : contains(["ingress", "egress"], rule.direction)
+      for idx, rule in var.rules :
+      !(rule.port != null && (rule.port_range_min != null || rule.port_range_max != null))
     ])
-    error_message = "Direction must be either 'ingress' or 'egress'."
-  }
-
-  validation {
-    condition = alltrue([
-      for rule in var.rules : rule.remote_group_id == null || rule.remote_ip_prefix == null
-    ])
-    error_message = "Only one of remote_group_id or remote_ip_prefix can be specified per rule."
+    error_message = "Use either 'port' OR 'port_range_min' and 'port_range_max', not both."
   }
 }
-
