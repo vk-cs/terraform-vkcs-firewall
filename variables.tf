@@ -1,30 +1,24 @@
 variable "region" {
   type        = string
-  description = "The region in which to obtain the networking client."
+  description = "The region in which to create module resources."
   default     = null
 }
 
 variable "sdn" {
   type        = string
-  description = "SDN to use for this resource."
+  description = "SDN to use for this module. Must be set if more than one sdn are plugged to the project."
   default     = null
-}
-
-variable "name" {
-  type        = string
-  description = "A name for the security group."
 }
 
 variable "tags" {
   type        = set(string)
-  description = "Tags for the security group."
+  description = "Default set of module resources tags."
   default     = []
 }
 
-variable "delete_default_rules" {
-  type        = bool
-  description = "Whether or not to delete the default egress security rules."
-  default     = false
+variable "name" {
+  type        = string
+  description = "Default name for module resources. Used when name is not specified for a resource."
 }
 
 variable "description" {
@@ -33,20 +27,26 @@ variable "description" {
   default     = null
 }
 
+variable "delete_default_rules" {
+  type        = bool
+  description = "Whether or not to delete the default egress security rules."
+  default     = false
+}
+
 variable "rules" {
   type = list(object({
-    direction        = optional(string, "ingress")
     description      = optional(string)
+    direction        = optional(string, "ingress")
+    protocol         = optional(string)
     port             = optional(number)
     port_range_max   = optional(number)
     port_range_min   = optional(number)
-    protocol         = optional(string)
-    remote_group_id  = optional(string)
     remote_ip_prefix = optional(string)
+    remote_group_id  = optional(string)
   }))
   description = <<-EOT
   List of security rules. See `vkcs_networking_secgroup_rule` arguments.
-  Use `port` or `port_range_min` and `port_range_max`.
+  `port` - could be used for single port rule instead of setting both `port_range_min` and `port_range_max`. Do not use `port` and `port_range_min` with `port_range_max` together.
   EOT
   default     = []
 
@@ -55,6 +55,6 @@ variable "rules" {
       for idx, rule in var.rules :
       !(rule.port != null && (rule.port_range_min != null || rule.port_range_max != null))
     ])
-    error_message = "Use either 'port' OR 'port_range_min' and 'port_range_max', not both."
+    error_message = "Use either 'port' or 'port_range_min' and 'port_range_max', not both."
   }
 }
