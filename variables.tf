@@ -46,6 +46,7 @@ variable "rules" {
   }))
   description = <<-EOT
   List of security rules. See `vkcs_networking_secgroup_rule` arguments.
+  
   `port` - could be used for single port rule instead of setting both `port_range_min` and `port_range_max`. Do not use `port` and `port_range_min` with `port_range_max` together.
   EOT
   default     = []
