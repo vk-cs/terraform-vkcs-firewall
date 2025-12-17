@@ -14,7 +14,7 @@ It supports creating:
 ### Enable all traffic
 ```hcl
 module "firewall_all" {
-  source = "../../"
+  source = "vk-cs/firewall/vkcs"
 
   name = "all-tf-example"
 
@@ -28,7 +28,7 @@ module "firewall_all" {
 You can find examples in the [`examples`](./examples) directory on [GitHub](https://github.com/vk-cs/terraform-vkcs-firewall/tree/v0.0.1/examples).
 
 Running an example:
-- Clone [GitHub repository](https://github.com/vk-cs/terraform-vkcs-firewall/v0.0.1/main)
+- Clone [GitHub repository](https://github.com/vk-cs/terraform-vkcs-firewall) and checkout tag v0.0.1.
 - [Install Terraform](https://cloud.vk.com/docs/en/tools-for-using-services/terraform/quick-start). **Note**: You do not need `vkcs_provider.tf` to run module example.
 - [Init Terraform](https://cloud.vk.com/docs/en/tools-for-using-services/terraform/quick-start#terraform_initialization) from the example folder.
 - [Run Terraform](https://cloud.vk.com/docs/en/tools-for-using-services/terraform/quick-start#creating_resources_via_terraform) to create example resources.

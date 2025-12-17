@@ -1,5 +1,5 @@
 module "firewall_all" {
-  source = "../../"
+  source = "vk-cs/firewall/vkcs"
 
   name = "all-tf-example"
 
