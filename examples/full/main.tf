@@ -1,5 +1,5 @@
 module "firewall_admin" {
-  source = "../../"
+  source = "vk-cs/firewall/vkcs"
 
   name        = "admin-tf-example"
   description = "Admin access. Full firewall TF module example."
@@ -21,7 +21,7 @@ module "firewall_admin" {
 }
 
 module "firewall_http" {
-  source = "../../"
+  source = "vk-cs/firewall/vkcs"
 
   name        = "http-tf-example"
   description = "HTTP access. Full firewall TF module example."
@@ -53,7 +53,7 @@ module "firewall_http" {
 }
 
 module "firewall_vrrp" {
-  source = "../../"
+  source = "vk-cs/firewall/vkcs"
 
   name                 = "vrrp-tf-example"
   description          = "VRRP internal firewall. Full firewall TF module example"
