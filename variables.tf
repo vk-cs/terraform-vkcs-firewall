@@ -35,6 +35,7 @@ variable "delete_default_rules" {
 
 variable "rules" {
   type = list(object({
+    resource_key     = optional(string)
     description      = optional(string)
     direction        = optional(string, "ingress")
     protocol         = optional(string)
@@ -48,14 +49,30 @@ variable "rules" {
   List of security rules. See `vkcs_networking_secgroup_rule` arguments.
   
   `port` - could be used for single port rule instead of setting both `port_range_min` and `port_range_max`. Do not use `port` and `port_range_min` with `port_range_max` together.
+
+  `resource_key` - unique key of the rule in module `vkcs_networking_secgroup_rule` resource list. It is mandatory for rules with specified `remote_group_id`.
+  Also can be specified to simplify access to resources in TF state.
   EOT
   default     = []
 
   validation {
     condition = alltrue([
-      for idx, rule in var.rules :
-      !(rule.port != null && (rule.port_range_min != null || rule.port_range_max != null))
+      for r in var.rules :
+      r.port == null || r.port_range_min == null && r.port_range_max == null
     ])
     error_message = "Use either 'port' or 'port_range_min' and 'port_range_max', not both."
+  }
+  validation {
+    condition = (
+      length([for r in var.rules : r.resource_key if r.resource_key != null]) ==
+      length(distinct([for r in var.rules : r.resource_key if r.resource_key != null]))
+    )
+    error_message = "resource_key must be unique within rules list."
+  }
+  validation {
+    condition = alltrue([
+      for r in var.rules : r.remote_ip_prefix != null || r.resource_key != null
+    ])
+    error_message = "resource_key must be set for rules with remote_group_id"
   }
 }
