@@ -14,10 +14,10 @@ It supports creating:
 ### Enable all traffic
 ```hcl
 module "firewall_all" {
-  source = "https://github.com/vk-cs/terraform-vkcs-firewall/archive/refs/tags/v0.0.2.zip//terraform-vkcs-firewall-0.0.2"
+  source = "https://github.com/vk-cs/terraform-vkcs-firewall/archive/refs/tags/v0.0.3.zip//terraform-vkcs-firewall-0.0.3"
   # Alternatively you may refer right to Hashicorp module repository if you have access to it
   # source = "vk-cs/firewall/vkcs"
-  # version = "0.0.2"
+  # version = "0.0.3"
 
   name = "all-tf-example"
 
@@ -33,11 +33,11 @@ output "firewall_all" {
 ```
 
 ## Examples
-You can find examples in the [`examples`](./examples) directory on [GitHub](https://github.com/vk-cs/terraform-vkcs-firewall/tree/v0.0.2/examples).
+You can find examples in the [`examples`](./examples) directory on [GitHub](https://github.com/vk-cs/terraform-vkcs-firewall/tree/v0.0.3/examples).
 
 Running an example:
-- Clone [GitHub repository](https://github.com/vk-cs/terraform-vkcs-firewall) and checkout tag v0.0.2.
-  Or get [module archive](https://github.com/vk-cs/terraform-vkcs-firewall/archive/refs/tags/v0.0.2.zip) and unpack it.
+- Clone [GitHub repository](https://github.com/vk-cs/terraform-vkcs-firewall) and checkout tag v0.0.3.
+  Or get [module archive](https://github.com/vk-cs/terraform-vkcs-firewall/archive/refs/tags/v0.0.3.zip) and unpack it.
   Or just copy files above to a new folder.
 - [Install Terraform](https://cloud.vk.com/docs/en/tools-for-using-services/terraform/quick-start). **Note**: You do not need `vkcs_provider.tf` to run module example.
 - [Init Terraform](https://cloud.vk.com/docs/en/tools-for-using-services/terraform/quick-start#terraform_initialization) from the example folder.
@@ -120,10 +120,14 @@ Description: List of security rules. See `vkcs_networking_secgroup_rule` argumen
 
 `port` - could be used for single port rule instead of setting both `port_range_min` and `port_range_max`. Do not use `port` and `port_range_min` with `port_range_max` together.
 
+`resource_key` - unique key of the rule in module `vkcs_networking_secgroup_rule` resource list. It is mandatory for rules with specified `remote_group_id`.  
+Also can be specified to simplify access to resources in TF state.
+
 Type:
 
 ```hcl
 list(object({
+    resource_key     = optional(string)
     description      = optional(string)
     direction        = optional(string, "ingress")
     protocol         = optional(string)
